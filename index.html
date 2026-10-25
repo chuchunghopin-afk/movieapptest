@@ -1,0 +1,1392 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-950 text-slate-100">
+<head>
+    <!-- Web icon -->
+     <link rel="icon" href="https://i.ibb.co/fd3wxP7R/Ap-Moive-Logo-New-removebg-preview.png">
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ap Movie Store </title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Inter Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+              900: '#1e3a8a',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom Scrollbar Styling */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0f172a;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #475569;
+    }
+    .hide-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .hide-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    .glass-panel {
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .glass-nav {
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5);
+    }
+  </style>
+</head>
+<body class="h-full flex flex-col font-sans bg-slate-950 text-slate-100 antialiased selection:bg-blue-600 selection:text-white">
+
+  <!-- TOP PERSISTENT VIEW SWITCHER BAR -->
+  <header class="sticky top-0 z-50 bg-slate-900/90 border-b border-slate-800 backdrop-blur-md px-4 py-2.5 flex items-center justify-between shadow-lg">
+    <div class="flex items-center gap-3">
+      <div class="bg-gradient-to-tr from-blue-700 to-blue-500 p-2 w-10 h-10 rounded-full text-white shadow-lg flex items-center shadow-blue-600/300">
+        <i class="fa-solid font-bold fa-play text-lg"></i>
+      </div>
+      <span class="font-extrabold text-xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-indigo-300 to-white">
+        အပုံ့  <span class="text-blue-500"> Mobile</span>
+      </span>
+    </div>
+
+    <!-- Mode Switcher Controls -->
+    <div class="flex items-center gap-2 bg-slate-950/80 p-1 rounded-xl border border-slate-800">
+      <button id="switchToClientBtn" onclick="appState.switchView('client')" class="px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all duration-200 bg-blue-600 text-white shadow-md">
+        <i class="fa-solid fa-mobile-screen"></i>
+        <span>Client App</span>
+      </button>
+      <button id="switchToAdminBtn" onclick="appState.switchView('admin')" class="px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all duration-200 text-slate-400 hover:text-white">
+        <i class="fa-solid fa-user-shield"></i>
+        <span>Admin Panel</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- APP CONTAINERS -->
+  <main class="flex-1 relative flex flex-col overflow-hidden">
+
+    <!-- ========================================== -->
+    <!-- VIEW 1: CLIENT-FACING MOBILE SPA APP      -->
+    <!-- ========================================== -->
+    <div id="clientAppView" class="flex-1 flex flex-col h-full overflow-y-auto pb-20 relative">
+
+      <!-- CLIENT PAGES -->
+
+      <!-- PAGE: HOME -->
+      <section id="client-home-page" class="client-page space-y-6 pb-6">
+        <!-- Hero Banner Carousel -->
+        <div class="relative w-full h-[320px] sm:h-[420px] lg:h-[480px] bg-slate-900 overflow-hidden group">
+          <div id="heroCarouselContainer" class="w-full h-full relative">
+            <!-- Dynamic Banner Loaded Here -->
+            <div class="absolute inset-0 bg-slate-900 animate-pulse"></div>
+          </div>
+          <div class="absolute bottom-4 right-4 flex gap-2 z-20">
+            <button onclick="carouselPrev()" class="p-2 rounded-full glass-panel text-white hover:bg-blue-600 transition"><i class="fa-solid fa-chevron-left"></i></button>
+            <button onclick="carouselNext()" class="p-2 rounded-full glass-panel text-white hover:bg-blue-600 transition"><i class="fa-solid fa-chevron-right"></i></button>
+          </div>
+        </div>
+
+        <!-- Continue Watching / Quick Row -->
+        <div class="px-4">
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="text-lg font-bold text-slate-100 flex items-center gap-2">
+              <i class="fa-solid fa-fire text-amber-500"></i> Trending Now
+            </h2>
+            <button onclick="appState.switchClientTab('search')" class="text-xs text-blue-400 hover:underline">Explore All</button>
+          </div>
+          <div id="trendingRail" class="flex gap-4 overflow-x-auto hide-scrollbar py-2">
+            <!-- Movie cards dynamic -->
+          </div>
+        </div>
+
+        <!-- Categorized Movie Rails -->
+        <div id="categoryRailsContainer" class="px-4 space-y-6">
+          <!-- Dynamically Generated Category Rows -->
+        </div>
+      </section>
+
+      <!-- PAGE: SEARCH -->
+      <section id="client-search-page" class="client-page hidden px-4 py-4 space-y-4">
+        <div class="relative">
+          <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+          <input type="text" id="searchInput" oninput="handleSearchInput(this.value)" placeholder="Search title, genre, or cast..." class="w-full bg-slate-900/90 border border-slate-800 rounded-xl py-3 pl-11 pr-4 text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
+        </div>
+
+        <!-- Filter Tags -->
+        <div id="searchCategoryBadges" class="flex gap-2 overflow-x-auto hide-scrollbar py-1">
+          <button onclick="filterSearchByCategory('')" class="px-3 py-1.5 rounded-full text-xs font-medium bg-blue-600 text-white whitespace-nowrap">All</button>
+          <!-- Dynamic Category Pills -->
+        </div>
+
+        <!-- Search Results Grid -->
+        <div id="searchResultsGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 pt-2">
+          <!-- Dynamic Search Results -->
+        </div>
+      </section>
+
+      <!-- PAGE: CATEGORIES -->
+      <section id="client-categories-page" class="client-page hidden px-4 py-4 space-y-4">
+        <h2 class="text-xl font-bold text-slate-100 mb-2">Browse Genres</h2>
+        <div id="categoriesGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+          <!-- Dynamic Colorful Category Cards -->
+        </div>
+      </section>
+
+      <!-- PAGE: PROFILE & WATCHLIST -->
+      <section id="client-profile-page" class="client-page hidden px-4 py-4 space-y-6">
+        <!-- Auth View -->
+        <div id="authProfileCard" class="glass-panel p-5 rounded-2xl border border-slate-800 shadow-xl">
+          <!-- Rendered dynamically depending on Auth state -->
+        </div>
+
+        <!-- User Watchlist / Favorites -->
+        <div class="space-y-3">
+          <h3 class="text-lg font-bold text-slate-100 flex items-center gap-2">
+            <i class="fa-solid fa-bookmark text-blue-500"></i> My Watchlist
+          </h3>
+          <div id="watchlistGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+            <!-- Dynamic Watchlist Items -->
+          </div>
+        </div>
+      </section>
+
+      <!-- CLIENT BOTTOM NAVIGATION BAR -->
+      <nav class="fixed bottom-0 left-0 right-0 z-40 glass-nav py-2.5 px-6 flex justify-between items-center max-w-md mx-auto sm:max-w-xl md:max-w-2xl rounded-t-2xl">
+        <button onclick="appState.switchClientTab('home')" id="nav-home" class="flex flex-col items-center gap-1 text-blue-500 transition-colors">
+          <i class="fa-solid fa-house text-lg"></i>
+          <span class="text-[10px] font-semibold">Home</span>
+        </button>
+        <button onclick="appState.switchClientTab('search')" id="nav-search" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-200 transition-colors">
+          <i class="fa-solid fa-magnifying-glass text-lg"></i>
+          <span class="text-[10px] font-semibold">Search</span>
+        </button>
+        <button onclick="appState.switchClientTab('categories')" id="nav-categories" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-200 transition-colors">
+          <i class="fa-solid fa-grip-vertical text-lg"></i>
+          <span class="text-[10px] font-semibold">Categories</span>
+        </button>
+        <button onclick="appState.switchClientTab('profile')" id="nav-profile" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-200 transition-colors">
+          <i class="fa-solid fa-user text-lg"></i>
+          <span class="text-[10px] font-semibold">Profile</span>
+        </button>
+      </nav>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- VIEW 2: DESKTOP ADMIN PANEL                -->
+    <!-- ========================================== -->
+    <div id="adminAppView" class="hidden flex-1 flex h-full overflow-hidden bg-slate-950">
+
+      <!-- Admin Sidebar -->
+      <aside class="w-64 bg-slate-900 border-r border-slate-800 flex flex-col justify-between hidden md:flex shrink-0">
+        <div class="p-5 space-y-6">
+          <div class="flex items-center gap-2 text-xs font-bold tracking-wider text-slate-500 uppercase">
+            Admin Console
+          </div>
+          <nav class="space-y-1">
+            <button onclick="appState.switchAdminTab('dashboard')" id="admin-nav-dashboard" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium bg-blue-600 text-white transition">
+              <i class="fa-solid fa-chart-pie w-5"></i> Dashboard
+            </button>
+            <button onclick="appState.switchAdminTab('movies')" id="admin-nav-movies" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-slate-200 transition">
+              <i class="fa-solid fa-film w-5"></i> Manage Movies
+            </button>
+            <button onclick="appState.switchAdminTab('categories')" id="admin-nav-categories" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-slate-200 transition">
+              <i class="fa-solid fa-tags w-5"></i> Manage Categories
+            </button>
+            <button onclick="appState.switchAdminTab('banners')" id="admin-nav-banners" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-slate-200 transition">
+              <i class="fa-solid fa-images w-5"></i> Manage Banners
+            </button>
+          </nav>
+        </div>
+
+        <!-- Quick Data Seed Button -->
+        <!-- <div class="p-4 border-t border-slate-800">
+          <button onclick="seedDatabaseWithMockData()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold py-2.5 px-3 rounded-xl flex items-center justify-center gap-2 transition shadow-lg shadow-emerald-900/30">
+            <i class="fa-solid fa-database"></i> Seed Sample Data
+          </button>
+        </div> -->
+      </aside>
+
+      <!-- Admin Content Main Area -->
+      <section class="flex-1 h-full overflow-y-auto p-4 md:p-8 space-y-6">
+
+        <!-- Mobile Admin Subnav Header -->
+        <div class="flex md:hidden items-center justify-between bg-slate-900 p-2 rounded-xl border border-slate-800 mb-4 overflow-x-auto hide-scrollbar">
+          <button onclick="appState.switchAdminTab('dashboard')" class="px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap bg-blue-600 text-white">Dashboard</button>
+          <button onclick="appState.switchAdminTab('movies')" class="px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap text-slate-400">Movies</button>
+          <button onclick="appState.switchAdminTab('categories')" class="px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap text-slate-400">Categories</button>
+          <button onclick="appState.switchAdminTab('banners')" class="px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap text-slate-400">Banners</button>
+        </div>
+
+        <!-- ADMIN TAB: DASHBOARD -->
+        <div id="admin-tab-dashboard" class="admin-tab space-y-6">
+          <h1 class="text-2xl font-bold text-slate-100">Overview Dashboard</h1>
+          
+          <!-- Stats Grid -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            <div class="glass-panel p-5 rounded-2xl border border-slate-800 flex items-center justify-between">
+              <div>
+                <p class="text-xs font-medium text-slate-400 uppercase">Total Movies</p>
+                <h3 id="statTotalMovies" class="text-3xl font-extrabold text-slate-100 mt-1">0</h3>
+              </div>
+              <div class="p-3 bg-blue-600/20 text-blue-500 rounded-xl">
+                <i class="fa-solid fa-film text-2xl"></i>
+              </div>
+            </div>
+            <div class="glass-panel p-5 rounded-2xl border border-slate-800 flex items-center justify-between">
+              <div>
+                <p class="text-xs font-medium text-slate-400 uppercase">Active Categories</p>
+                <h3 id="statTotalCategories" class="text-3xl font-extrabold text-slate-100 mt-1">0</h3>
+              </div>
+              <div class="p-3 bg-emerald-600/20 text-emerald-500 rounded-xl">
+                <i class="fa-solid fa-tags text-2xl"></i>
+              </div>
+            </div>
+            <div class="glass-panel p-5 rounded-2xl border border-slate-800 flex items-center justify-between">
+              <div>
+                <p class="text-xs font-medium text-slate-400 uppercase">Hero Banners</p>
+                <h3 id="statTotalBanners" class="text-3xl font-extrabold text-slate-100 mt-1">0</h3>
+              </div>
+              <div class="p-3 bg-purple-600/20 text-purple-500 rounded-xl">
+                <i class="fa-solid fa-images text-2xl"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Seed Banner Notice -->
+          <div class="p-4 rounded-2xl bg-gradient-to-r from-blue-900/40 to-slate-900 border border-blue-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div>
+              <h4 class="font-bold text-blue-300">Quick Start Demo Data</h4>
+              <p class="text-xs text-slate-400 mt-1">Instantly populate movies, genres, and hero banners with direct web image URLs.</p>
+            </div>
+            <button onclick="seedDatabaseWithMockData()" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-semibold whitespace-nowrap transition">
+              Populate Demo Data
+            </button>
+          </div>
+        </div>
+
+        <!-- ADMIN TAB: MOVIES MANAGEMENT -->
+        <div id="admin-tab-movies" class="admin-tab hidden space-y-6">
+          <div class="flex items-center justify-between">
+            <h1 class="text-2xl font-bold text-slate-100">Manage Movies</h1>
+            <button onclick="openMovieModal()" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-semibold flex items-center gap-2 transition">
+              <i class="fa-solid fa-plus"></i> Add Movie
+            </button>
+          </div>
+
+          <!-- Movies Data Table -->
+          <div class="glass-panel rounded-2xl border border-slate-800 overflow-hidden shadow-xl">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-sm text-slate-300">
+                <thead class="bg-slate-900/80 text-xs text-slate-400 uppercase border-b border-slate-800">
+                  <tr>
+                    <th class="p-4">Poster</th>
+                    <th class="p-4">Title</th>
+                    <th class="p-4">Category</th>
+                    <th class="p-4">Video Code</th>
+                    <th class="p-4 text-right">Edit</th>
+                  </tr>
+                </thead>
+                <tbody id="adminMoviesTableBody" class="divide-y divide-slate-800">
+                  <!-- Dynamic Movie Rows -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ADMIN TAB: CATEGORIES MANAGEMENT -->
+        <div id="admin-tab-categories" class="admin-tab hidden space-y-6">
+          <div class="flex items-center justify-between">
+            <h1 class="text-2xl font-bold text-slate-100">Manage Categories</h1>
+            <button onclick="openCategoryModal()" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-semibold flex items-center gap-2 transition">
+              <i class="fa-solid fa-plus"></i> Add Category
+            </button>
+          </div>
+
+          <!-- Categories Grid List -->
+          <div id="adminCategoriesList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <!-- Dynamic Category Cards -->
+          </div>
+        </div>
+
+        <!-- ADMIN TAB: BANNERS MANAGEMENT -->
+        <div id="admin-tab-banners" class="admin-tab hidden space-y-6">
+          <div class="flex items-center justify-between">
+            <h1 class="text-2xl font-bold text-slate-100">Manage Banners</h1>
+            <button onclick="openBannerModal()" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-semibold flex items-center gap-2 transition">
+              <i class="fa-solid fa-plus"></i> Add Banner
+            </button>
+          </div>
+
+          <!-- Banners List -->
+          <div id="adminBannersList" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <!-- Dynamic Banner Cards -->
+          </div>
+        </div>
+
+      </section>
+    </div>
+
+  </main>
+
+  <!-- ========================================== -->
+  <!-- MODALS & OVERLAYS                          -->
+  <!-- ========================================== -->
+
+  <!-- MOVIE DETAIL & PLAYER MODAL -->
+  <div id="movieDetailModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden transition-opacity">
+    <div class="glass-panel w-full max-w-3xl max-h-[90vh] rounded-2xl overflow-y-auto border border-slate-800 relative shadow-2xl">
+      <button onclick="closeMovieDetailModal()" class="absolute top-4 right-4 z-10 w-9 h-9 bg-slate-900/80 hover:bg-slate-800 text-white rounded-full flex items-center justify-center border border-slate-700 transition">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div id="movieDetailContent" class="space-y-4 p-6">
+        <!-- Content dynamic -->
+      </div>
+    </div>
+  </div>
+
+  <!-- MOVIE ADD/EDIT MODAL (ADMIN) -->
+  <div id="movieFormModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden">
+    <div class="glass-panel w-full max-w-lg rounded-2xl p-6 border border-slate-800 space-y-4 max-h-[90vh] overflow-y-auto">
+      <h3 id="movieFormTitle" class="text-xl font-bold text-slate-100">Add New Movie</h3>
+      <form id="movieForm" onsubmit="handleSaveMovie(event)" class="space-y-3">
+        <input type="hidden" id="movieFormId">
+        
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 mb-1">Title</label>
+          <input type="text" id="movieFormTitleInput" required class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-100 focus:outline-none focus:border-blue-500">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-400 mb-1">Year</label>
+            <input type="number" id="movieFormYearInput" required value="2024" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-100 focus:outline-none focus:border-blue-500">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-400 mb-1">Code (e.g. Ks,Cs,Ts)</label>
+            <input type="text" id="movieFormRatingInput" required  class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-100 focus:outline-none focus:border-blue-500">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 mb-1">Category</label>
+          <select id="movieFormCategorySelect" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-100 focus:outline-none focus:border-blue-500">
+            <!-- Dynamic dropdown options -->
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 mb-1">Poster Image URL (Direct Web URL)</label>
+          <input type="url" id="movieFormPosterInput" required placeholder="https://image.tmdb.org/..." class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-100 focus:outline-none focus:border-blue-500">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 mb-1">Image Link / Watch Link / Video Stream URL (e.g. YouTube Embed)</label>
+          <input type="url" id="movieFormWatchInput" required placeholder="https://www.youtube.com/embed/..." class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-100 focus:outline-none focus:border-blue-500">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 mb-1">Cast (Comma-separated)</label>
+          <input type="text" id="movieFormCastInput" placeholder="Actor A, Actor B" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-100 focus:outline-none focus:border-blue-500">
+        </div> 
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 mb-1">ဇာတ်ညွှန်း</label>
+          <textarea id="movieFormDescInput" rows="3" required  class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-100 focus:outline-none focus:border-blue-500"></textarea>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeMovieFormModal()" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-xl text-xs font-semibold hover:bg-slate-700">Cancel</button>
+          <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-xl text-xs font-semibold hover:bg-blue-500">Save Movie</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- CATEGORY ADD MODAL (ADMIN) -->
+  <div id="categoryFormModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden">
+    <div class="glass-panel w-full max-w-sm rounded-2xl p-6 border border-slate-800 space-y-4">
+      <h3 class="text-xl font-bold text-slate-100">Add Category</h3>
+      <form onsubmit="handleSaveCategory(event)" class="space-y-3">
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 mb-1">Category Name</label>
+          <input type="text" id="categoryFormNameInput" required placeholder="e.g. Action" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-100 focus:outline-none focus:border-blue-500">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 mb-1">FontAwesome Icon Class</label>
+          <input type="text" id="categoryFormIconInput" required value="fa-bolt" placeholder="e.g. fa-bolt" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-100 focus:outline-none focus:border-blue-500">
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeCategoryFormModal()" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-xl text-xs font-semibold">Cancel</button>
+          <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-xl text-xs font-semibold">Save Category</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- BANNER ADD MODAL (ADMIN) -->
+  <div id="bannerFormModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden">
+    <div class="glass-panel w-full max-w-md rounded-2xl p-6 border border-slate-800 space-y-4">
+      <h3 class="text-xl font-bold text-slate-100">Add Hero Banner</h3>
+      <form onsubmit="handleSaveBanner(event)" class="space-y-3">
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 mb-1">Banner Title</label>
+          <input type="text" id="bannerFormTitleInput" required placeholder="Featured Blockbuster" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-100 focus:outline-none focus:border-blue-500">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 mb-1">Subtitle / Tagline</label>
+          <input type="text" id="bannerFormSubtitleInput" placeholder="Now Streaming Exclusively" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-100 focus:outline-none focus:border-blue-500">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 mb-1">Image URL (Direct Web URL)</label>
+          <input type="url" id="bannerFormImageInput" required placeholder="https://..." class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-100 focus:outline-none focus:border-blue-500">
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeBannerFormModal()" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-xl text-xs font-semibold">Cancel</button>
+          <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-xl text-xs font-semibold">Save Banner</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- NOTIFICATION TOAST -->
+  <div id="toastNotification" class="fixed top-16 right-4 z-50 max-w-xs bg-slate-900 border border-blue-500/50 text-slate-100 px-4 py-3 rounded-xl shadow-2xl transition-all duration-300 opacity-0 pointer-events-none translate-y-[-10px] flex items-center gap-3">
+    <i id="toastIcon" class="fa-solid fa-circle-check text-blue-500"></i>
+    <span id="toastMsg" class="text-xs font-medium">Notification</span>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- JAVASCRIPT & FIREBASE INITIALIZATION       -->
+  <!-- ========================================== -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot, addDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    // Application Global State
+    window.appState = {
+      currentView: 'client', // 'client' or 'admin'
+      clientTab: 'home', // 'home', 'search', 'categories', 'profile'
+      adminTab: 'dashboard', // 'dashboard', 'movies', 'categories', 'banners'
+      movies: [],
+      categories: [],
+      banners: [],
+      watchlist: [],
+      currentUser: null,
+      currentBannerIndex: 0,
+      bannerInterval: null,
+      
+      switchView: function(view) {
+        if (!view) return;
+        this.currentView = view;
+        const clientEl = document.getElementById('clientAppView');
+        const adminEl = document.getElementById('adminAppView');
+        const switchClientBtn = document.getElementById('switchToClientBtn');
+        const switchAdminBtn = document.getElementById('switchToAdminBtn');
+
+        if (view === 'client') {
+          clientEl.classList.remove('hidden');
+          adminEl.classList.add('hidden');
+          switchClientBtn.className = "px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all duration-200 bg-blue-600 text-white shadow-md";
+          switchAdminBtn.className = "px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all duration-200 text-slate-400 hover:text-white";
+        } else {
+          clientEl.classList.add('hidden');
+          adminEl.classList.remove('hidden');
+          switchAdminBtn.className = "px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all duration-200 bg-blue-600 text-white shadow-md";
+          switchClientBtn.className = "px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all duration-200 text-slate-400 hover:text-white";
+          renderAdminDashboard();
+        }
+      },
+
+      switchClientTab: function(tab) {
+        if (!tab) return;
+        this.clientTab = tab;
+        document.querySelectorAll('.client-page').forEach(el => el.classList.add('hidden'));
+        
+        const target = document.getElementById(`client-${tab}-page`);
+        if (target) target.classList.remove('hidden');
+
+        // Nav active highlight
+        ['home', 'search', 'categories', 'profile'].forEach(t => {
+          const btn = document.getElementById(`nav-${t}`);
+          if (btn) {
+            if (t === tab) {
+              btn.className = "flex flex-col items-center gap-1 text-blue-500 transition-colors";
+            } else {
+              btn.className = "flex flex-col items-center gap-1 text-slate-400 hover:text-slate-200 transition-colors";
+            }
+          }
+        });
+      },
+
+      switchAdminTab: function(tab) {
+        if (!tab) return;
+        this.adminTab = tab;
+        document.querySelectorAll('.admin-tab').forEach(el => el.classList.add('hidden'));
+        
+        const target = document.getElementById(`admin-tab-${tab}`);
+        if (target) target.classList.remove('hidden');
+
+        ['dashboard', 'movies', 'categories', 'banners'].forEach(t => {
+          const btn = document.getElementById(`admin-nav-${t}`);
+          if (btn) {
+            if (t === tab) {
+              btn.className = "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium bg-blue-600 text-white transition";
+            } else {
+              btn.className = "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-slate-200 transition";
+            }
+          }
+        });
+      }
+    };
+
+    // Firebase Setup
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'javagoat-app';
+   const firebaseConfig = {
+  apiKey: "AIzaSyBZStrUwdVO-Nv-sHxqQK_l7JfUgFGxmo0",
+  authDomain: "movieapp-6de14.firebaseapp.com",
+  databaseURL: "https://movieapp-6de14-default-rtdb.firebaseio.com",
+  projectId: "movieapp-6de14",
+  storageBucket: "movieapp-6de14.firebasestorage.app",
+  messagingSenderId: "765845181906",
+  appId: "1:765845181906:web:b33eccfce6f808aff3a40b",
+  measurementId: "G-1HW7H3NMFZ"
+};
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    // Initialize Auth Session
+    async function initAuth() {
+      try {
+        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+          await signInWithCustomToken(auth, __initial_auth_token);
+        } else {
+          await signInAnonymously(auth);
+        }
+      } catch (err) {
+        console.warn("Auth initialization fallback to anonymous mode:", err);
+      }
+    }
+
+    onAuthStateChanged(auth, (user) => {
+      window.appState.currentUser = user;
+      renderAuthProfile();
+      if (user) {
+        setupFirestoreRealtimeListeners();
+      }
+    });
+
+    // Realtime Database Listeners
+    function setupFirestoreRealtimeListeners() {
+      if (!auth.currentUser) return;
+
+      // Public Collections Paths
+      const moviesCol = collection(db, 'artifacts', appId, 'public', 'data', 'movies');
+      const categoriesCol = collection(db, 'artifacts', appId, 'public', 'data', 'categories');
+      const bannersCol = collection(db, 'artifacts', appId, 'public', 'data', 'banners');
+
+      // Sync Movies
+      onSnapshot(moviesCol, (snapshot) => {
+        window.appState.movies = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        renderClientHome();
+        renderSearchGrid();
+        renderAdminMoviesTable();
+        renderAdminDashboard();
+      }, (err) => console.error("Movies listener error:", err));
+
+      // Sync Categories
+      onSnapshot(categoriesCol, (snapshot) => {
+        window.appState.categories = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        renderCategoriesPage();
+        renderMovieCategoryDropdown();
+        renderAdminCategoriesList();
+        renderAdminDashboard();
+      }, (err) => console.error("Categories listener error:", err));
+
+      // Sync Banners
+      onSnapshot(bannersCol, (snapshot) => {
+        window.appState.banners = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        renderHeroBanner();
+        renderAdminBannersList();
+        renderAdminDashboard();
+      }, (err) => console.error("Banners listener error:", err));
+
+      // Sync User Private Watchlist
+      const watchlistCol = collection(db, 'artifacts', appId, 'users', auth.currentUser.uid, 'watchlist');
+      onSnapshot(watchlistCol, (snapshot) => {
+        window.appState.watchlist = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        renderWatchlist();
+      }, (err) => console.error("Watchlist error:", err));
+    }
+
+    // Default Placeholder Fallbacks
+    const DEFAULT_POSTER = "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=500&auto=format&fit=crop&q=80";
+    const DEFAULT_BANNER = " https://i.ibb.co/fY8vf74x/ap-movile.jpg?w=1200&auto=format&fit=crop&q=80 ";
+
+    // Defensive Check Helper
+    function safeString(val, fallback = "") {
+      if (val === null || val === undefined || val === 'undefined') return fallback;
+      return String(val);
+    }
+
+    // UI RENDERERS
+    function renderHeroBanner() {
+      const container = document.getElementById('heroCarouselContainer');
+      if (!container) return;
+
+      const banners = window.appState.banners;
+      if (!banners || banners.length === 0) {
+        container.innerHTML = `
+          <div class="w-full h-full relative">
+            <img src="${DEFAULT_BANNER}" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent flex flex-col justify-end p-6">
+              <span class="text-blue-500 font-bold text-xs uppercase tracking-wider mb-1"> </span>
+              <h1 class="text-2xl sm:text-4xl font-extrabold text-white">  </h1>
+              <p class="text-slate-300 text-xs sm:text-sm mt-1 max-w-md"> </p>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      const idx = window.appState.currentBannerIndex % banners.length;
+      const banner = banners[idx];
+      const imgUrl = safeString(banner.imageUrl, DEFAULT_BANNER);
+
+      container.innerHTML = `
+        <div class="w-full h-full relative transition-opacity duration-500">
+          <img src="${imgUrl}" onerror="this.src='${DEFAULT_BANNER}'" class="w-full h-full object-cover">
+          <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/30 to-transparent flex flex-col justify-end p-6">
+            <span class="text-blue-400 font-bold text-xs uppercase tracking-wider mb-1">Ongoing Series </span>
+            <h1 class="text-2xl sm:text-4xl font-extrabold text-white drop-shadow-md">${safeString(banner.title, 'Featured Movie')}</h1>
+            <p class="text-slate-300 text-xs sm:text-sm mt-1 max-w-md drop-shadow">${safeString(banner.subtitle, 'Watch now on JavaGoat')}</p>
+          </div>
+        </div>
+      `;
+    }
+
+    window.carouselNext = function() {
+      if (!window.appState.banners || window.appState.banners.length === 0) return;
+      window.appState.currentBannerIndex = (window.appState.currentBannerIndex + 1) % window.appState.banners.length;
+      renderHeroBanner();
+    };
+
+    window.carouselPrev = function() {
+      if (!window.appState.banners || window.appState.banners.length === 0) return;
+      window.appState.currentBannerIndex = (window.appState.currentBannerIndex - 1 + window.appState.banners.length) % window.appState.banners.length;
+      renderHeroBanner();
+    };
+
+    // Auto Slide Hero Carousel
+    setInterval(() => {
+      if (window.appState.currentView === 'client' && window.appState.clientTab === 'home') {
+        window.carouselNext();
+      }
+    }, 6000);
+
+    function renderClientHome() {
+      const trendingRail = document.getElementById('trendingRail');
+      const railsContainer = document.getElementById('categoryRailsContainer');
+      if (!trendingRail || !railsContainer) return;
+
+      const movies = window.appState.movies || [];
+
+      // Render Trending Rail
+      trendingRail.innerHTML = movies.map(m => createMovieCardHTML(m)).join('') || `<p class="text-xs text-slate-500 py-4">No movies added yet. Switch to Admin Panel to seed sample data.</p>`;
+
+      // Group Movies by Categories
+      const categories = window.appState.categories || [];
+      if (categories.length === 0) {
+        railsContainer.innerHTML = '';
+        return;
+      }
+
+      railsContainer.innerHTML = categories.map(cat => {
+        const catMovies = movies.filter(m => safeString(m.category).toLowerCase() === safeString(cat.name).toLowerCase());
+        if (catMovies.length === 0) return '';
+
+        return `
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <h3 class="text-md font-bold text-slate-200 flex items-center gap-2">
+                <i class="fa-solid ${safeString(cat.icon, 'fa-film')} text-blue-500"></i> ${safeString(cat.name)}
+              </h3>
+            </div>
+            <div class="flex gap-4 overflow-x-auto hide-scrollbar py-1">
+              ${catMovies.map(m => createMovieCardHTML(m)).join('')}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function createMovieCardHTML(movie) {
+      if (!movie || !movie.id) return '';
+      const poster = safeString(movie.posterUrl, DEFAULT_POSTER);
+      const rating = safeString(movie.rating, 'N/A');
+      const title = safeString(movie.title, 'Untitled');
+      const year = safeString(movie.year, '2024');
+
+      return `
+        <div onclick="openMovieDetailModal('${movie.id}')" class="shrink-0 w-36 sm:w-44 glass-panel rounded-xl overflow-hidden group cursor-pointer border border-slate-800/80 hover:border-blue-500/50 transition duration-300">
+          <div class="relative aspect-[2/3] overflow-hidden bg-slate-900">
+            <img src="${poster}" onerror="this.src='${DEFAULT_POSTER}'" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+            <div class="absolute top-2 right-2 bg-slate-900/80 backdrop-blur-md px-2 py-0.5 rounded-md text-[10px] font-bold text-amber-400 flex items-center gap-1">
+              <i class="fa-solid fa-star text-[9px]"></i> ${rating}
+            </div>
+            <div class="absolute inset-0 bg-blue-600/20 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+              <div class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center shadow-lg shadow-blue-600/50 transform scale-75 group-hover:scale-100 transition duration-200">
+                <i class="fa-solid fa-play ml-0.5"></i>
+              </div>
+            </div>
+          </div>
+          <div class="p-2.5">
+            <h4 class="font-semibold text-xs text-slate-100 truncate">${title}</h4>
+            <span class="text-[10px] text-slate-400">${year}</span>
+          </div>
+        </div>
+      `;
+    }
+
+    window.handleSearchInput = function(query) {
+      renderSearchGrid(query);
+    };
+
+    window.filterSearchByCategory = function(categoryName) {
+      const input = document.getElementById('searchInput');
+      if (input) input.value = categoryName;
+      renderSearchGrid(categoryName);
+    };
+
+    function renderSearchGrid(query = '') {
+      const grid = document.getElementById('searchResultsGrid');
+      const badges = document.getElementById('searchCategoryBadges');
+      if (!grid) return;
+
+      // Render Categories Filter Badges
+      if (badges) {
+        const cats = window.appState.categories || [];
+        badges.innerHTML = `<button onclick="filterSearchByCategory('')" class="px-3 py-1 rounded-full text-xs font-medium bg-slate-800 text-slate-300 hover:bg-blue-600 hover:text-white transition whitespace-nowrap">All</button>` + 
+        cats.map(c => `
+          <button onclick="filterSearchByCategory('${safeString(c.name)}')" class="px-3 py-1 rounded-full text-xs font-medium bg-slate-800 text-slate-300 hover:bg-blue-600 hover:text-white transition whitespace-nowrap">
+            ${safeString(c.name)}
+          </button>
+        `).join('');
+      }
+
+      const q = safeString(query).toLowerCase().trim();
+      const movies = window.appState.movies || [];
+
+      const filtered = movies.filter(m => {
+        const title = safeString(m.title).toLowerCase();
+        const cat = safeString(m.category).toLowerCase();
+        const cast = safeString(m.cast).toLowerCase();
+        return title.includes(q) || cat.includes(q) || cast.includes(q);
+      });
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-500 text-xs">No movies found matching "${query}"</div>`;
+        return;
+      }
+
+      grid.innerHTML = filtered.map(m => createMovieCardHTML(m)).join('');
+    }
+
+    function renderCategoriesPage() {
+      const grid = document.getElementById('categoriesGrid');
+      if (!grid) return;
+
+      const categories = window.appState.categories || [];
+      if (categories.length === 0) {
+        grid.innerHTML = `<div class="col-span-full text-center py-8 text-slate-500 text-xs">No categories created yet.</div>`;
+        return;
+      }
+
+      const colors = ['from-blue-600 to-indigo-700', 'from-purple-600 to-pink-700', 'from-emerald-600 to-teal-700', 'from-amber-600 to-orange-700', 'from-rose-600 to-red-700'];
+
+      grid.innerHTML = categories.map((cat, idx) => {
+        const bgGrad = colors[idx % colors.length];
+        return `
+          <div onclick="appState.switchClientTab('search'); filterSearchByCategory('${safeString(cat.name)}');" class="bg-gradient-to-br ${bgGrad} p-4 rounded-2xl cursor-pointer hover:scale-[1.02] transition shadow-lg flex flex-col justify-between h-28">
+            <i class="fa-solid ${safeString(cat.icon, 'fa-film')} text-2xl text-white/80"></i>
+            <span class="font-bold text-sm text-white">${safeString(cat.name)}</span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderAuthProfile() {
+      const card = document.getElementById('authProfileCard');
+      if (!card) return;
+
+      const user = window.appState.currentUser;
+      if (user && !user.isAnonymous) {
+        card.innerHTML = `
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-lg">
+                ${user.email ? user.email.charAt(0).toUpperCase() : 'U'}
+              </div>
+              <div>
+                <h4 class="font-bold text-sm text-slate-100">${user.email}</h4>
+                <p class="text-[10px] text-emerald-400 flex items-center gap-1">
+                  <i class="fa-solid fa-circle text-[6px]"></i> Logged In
+                </p>
+              </div>
+            </div>
+            <button onclick="handleSignOut()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold transition">
+              Logout
+            </button>
+          </div>
+        `;
+      } else {
+        card.innerHTML = `
+          <div class="space-y-4">
+            <div>
+              <h3 class="font-bold text-base text-slate-100">User Account</h3>
+              <p class="text-xs text-slate-400">Sign in to sync your personalized watchlist across devices.</p>
+            </div>
+            <form onsubmit="handleAuthSubmit(event)" class="space-y-3">
+              <input type="email" id="authEmail" required placeholder="Email Address" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-100 focus:outline-none focus:border-blue-500">
+              <input type="password" id="authPassword" required placeholder="Password" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-100 focus:outline-none focus:border-blue-500">
+              <div class="flex gap-2 pt-1">
+                <button type="submit" onclick="window.authAction='login'" class="flex-1 py-2 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-xl text-xs transition">Login</button>
+                <button type="submit" onclick="window.authAction='signup'" class="flex-1 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold rounded-xl text-xs transition">Sign Up</button>
+              </div>
+            </form>
+          </div>
+        `;
+      }
+    }
+
+    window.handleAuthSubmit = async function(e) {
+      e.preventDefault();
+      const email = document.getElementById('authEmail').value;
+      const pass = document.getElementById('authPassword').value;
+
+      try {
+        if (window.authAction === 'signup') {
+          await createUserWithEmailAndPassword(auth, email, pass);
+          showToast('Account created successfully!');
+        } else {
+          await signInWithEmailAndPassword(auth, email, pass);
+          showToast('Logged in successfully!');
+        }
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    };
+
+    window.handleSignOut = async function() {
+      await signOut(auth);
+      await signInAnonymously(auth);
+      showToast('Logged out');
+    };
+
+    function renderWatchlist() {
+      const grid = document.getElementById('watchlistGrid');
+      if (!grid) return;
+
+      const watchlist = window.appState.watchlist || [];
+      if (watchlist.length === 0) {
+        grid.innerHTML = `<div class="col-span-full text-center py-8 text-slate-500 text-xs">Your watchlist is empty. Click on a movie poster to save it!</div>`;
+        return;
+      }
+
+      grid.innerHTML = watchlist.map(item => {
+        const movie = (window.appState.movies || []).find(m => m.id === item.movieId);
+        if (!movie) return '';
+        return createMovieCardHTML(movie);
+      }).join('');
+    }
+
+    // MOVIE DETAIL & PLAYER MODAL LOGIC
+    window.openMovieDetailModal = function(movieId) {
+      if (!movieId || movieId === 'undefined') return;
+      const movie = (window.appState.movies || []).find(m => m.id === movieId);
+      if (!movie) return;
+
+      const modal = document.getElementById('movieDetailModal');
+      const content = document.getElementById('movieDetailContent');
+      if (!modal || !content) return;
+
+      const isSaved = (window.appState.watchlist || []).some(w => w.movieId === movie.id);
+      const watchUrl = safeString(movie.watchUrl, '');
+
+      content.innerHTML = `
+        <div class="relative w-full aspect-video bg-black rounded-xl overflow-hidden border border-slate-800 shadow-xl">
+          ${watchUrl.includes('youtube.com') || watchUrl.includes('embed') ? `
+            <iframe src="${watchUrl}" class="w-full h-full border-0" allowfullscreen></iframe>
+          ` : `
+            <div class="w-full h-full flex flex-col items-center justify-center p-4 bg-slate-900 text-center">
+              <i class="fa-solid fa-circle-play text-4xl text-blue-500 mb-2"></i>
+              <p class="text-xs text-slate-300">Direct Media Stream Link Available</p>
+              <a href="${watchUrl}" target="_blank" class="mt-3 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-semibold flex items-center gap-2">
+                Launch External Player <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+              </a>
+            </div>
+          `}
+        </div>
+
+        <div class="space-y-3">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <h2 class="text-xl font-extrabold text-slate-100">${safeString(movie.title)}</h2>
+              <div class="flex items-center gap-3 text-xs text-slate-400 mt-1">
+                <span>${safeString(movie.year)}</span>
+                <span>•</span>
+                <span class="px-2 py-0.5 rounded bg-slate-800 border border-slate-700 text-slate-300">${safeString(movie.category)}</span>
+                <span>•</span>
+                <span class="text-amber-400 font-bold flex items-center gap-1"><i class="fa-solid fa-star text-[10px]"></i> ${safeString(movie.rating)}</span>
+              </div>
+            </div>
+
+            <button onclick="toggleWatchlist('${movie.id}')" class="px-3 py-2 ${isSaved ? 'bg-amber-600 text-white' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'} rounded-xl text-xs font-semibold flex items-center gap-1.5 transition shrink-0">
+              <i class="fa-solid fa-bookmark"></i>
+              <span>${isSaved ? 'Saved' : 'Add to Watchlist'}</span>
+            </button>
+          </div>
+
+          <p class="text-xs text-slate-300 leading-relaxed">${safeString(movie.description)}</p>
+
+          ${movie.cast ? `
+            <div class="pt-2 border-t border-slate-800">
+              <span class="text-[11px] font-bold text-slate-400 uppercase">Cast:</span>
+              <p class="text-xs text-slate-300">${safeString(movie.cast)}</p>
+            </div>
+          ` : ''}
+        </div>
+      `;
+
+      modal.classList.remove('hidden');
+    };
+
+    window.closeMovieDetailModal = function() {
+      const modal = document.getElementById('movieDetailModal');
+      if (modal) modal.classList.add('hidden');
+    };
+
+    window.toggleWatchlist = async function(movieId) {
+      if (!auth.currentUser) return showToast('Please sign in first', 'error');
+      
+      const watchlist = window.appState.watchlist || [];
+      const existing = watchlist.find(w => w.movieId === movieId);
+      const userWatchlistCol = collection(db, 'artifacts', appId, 'users', auth.currentUser.uid, 'watchlist');
+
+      try {
+        if (existing) {
+          await deleteDoc(doc(db, 'artifacts', appId, 'users', auth.currentUser.uid, 'watchlist', existing.id));
+          showToast('Removed from Watchlist');
+        } else {
+          await addDoc(userWatchlistCol, { movieId: movieId, addedAt: Date.now() });
+          showToast('Added to Watchlist');
+        }
+      } catch (e) {
+        showToast('Error updating watchlist', 'error');
+      }
+    };
+
+    // ADMIN CONTROLLERS & TABLES
+    function renderAdminDashboard() {
+      document.getElementById('statTotalMovies').innerText = (window.appState.movies || []).length;
+      document.getElementById('statTotalCategories').innerText = (window.appState.categories || []).length;
+      document.getElementById('statTotalBanners').innerText = (window.appState.banners || []).length;
+    }
+
+    function renderAdminMoviesTable() {
+      const tbody = document.getElementById('adminMoviesTableBody');
+      if (!tbody) return;
+
+      const movies = window.appState.movies || [];
+      if (movies.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-xs text-slate-500">No movies found. Add your first movie or seed sample data.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = movies.map(m => `
+        <tr class="hover:bg-slate-900/50 transition">
+          <td class="p-3">
+            <img src="${safeString(m.posterUrl, DEFAULT_POSTER)}" onerror="this.src='${DEFAULT_POSTER}'" class="w-10 h-14 object-cover rounded-md">
+          </td>
+          <td class="p-3 font-semibold text-slate-100">${safeString(m.title)}</td>
+          <td class="p-3 text-xs text-slate-400">${safeString(m.category)}</td>
+          <td class="p-3 text-xs text-amber-400 font-bold"><i class="fa-solid fa-star text-[10px]"></i> ${safeString(m.rating)}</td>
+          <td class="p-3 text-right space-x-2">
+            <button onclick="editMovie('${m.id}')" class="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-blue-400 rounded-lg text-xs font-semibold"><i class="fa-solid fa-pen"></i></button>
+            <button onclick="deleteMovie('${m.id}')" class="px-2.5 py-1.5 bg-slate-800 hover:bg-red-900/50 text-red-400 rounded-lg text-xs font-semibold"><i class="fa-solid fa-trash"></i></button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function renderMovieCategoryDropdown() {
+      const select = document.getElementById('movieFormCategorySelect');
+      if (!select) return;
+
+      const cats = window.appState.categories || [];
+      if (cats.length === 0) {
+        select.innerHTML = `<option value="Action">Action</option>`;
+        return;
+      }
+
+      select.innerHTML = cats.map(c => `<option value="${safeString(c.name)}">${safeString(c.name)}</option>`).join('');
+    }
+
+    window.openMovieModal = function(movieId = null) {
+      renderMovieCategoryDropdown();
+      const modal = document.getElementById('movieFormModal');
+      const title = document.getElementById('movieFormTitle');
+      
+      if (movieId) {
+        const m = window.appState.movies.find(item => item.id === movieId);
+        if (m) {
+          title.innerText = 'Edit Movie';
+          document.getElementById('movieFormId').value = m.id;
+          document.getElementById('movieFormTitleInput').value = safeString(m.title);
+          document.getElementById('movieFormYearInput').value = m.year || 2024;
+          document.getElementById('movieFormRatingInput').value = safeString(m.rating);
+          document.getElementById('movieFormCategorySelect').value = safeString(m.category);
+          document.getElementById('movieFormPosterInput').value = safeString(m.posterUrl);
+          document.getElementById('movieFormWatchInput').value = safeString(m.watchUrl);
+          document.getElementById('movieFormCastInput').value = safeString(m.cast);
+          document.getElementById('movieFormDescInput').value = safeString(m.description);
+        }
+      } else {
+        title.innerText = 'Add New Movie';
+        document.getElementById('movieForm').reset();
+        document.getElementById('movieFormId').value = '';
+      }
+
+      modal.classList.remove('hidden');
+    };
+
+    window.closeMovieFormModal = function() {
+      document.getElementById('movieFormModal').classList.add('hidden');
+    };
+
+    window.handleSaveMovie = async function(e) {
+      e.preventDefault();
+      const id = document.getElementById('movieFormId').value;
+      const data = {
+        title: document.getElementById('movieFormTitleInput').value,
+        year: parseInt(document.getElementById('movieFormYearInput').value) || 2024,
+        rating: document.getElementById('movieFormRatingInput').value,
+        category: document.getElementById('movieFormCategorySelect').value,
+        posterUrl: document.getElementById('movieFormPosterInput').value,
+        watchUrl: document.getElementById('movieFormWatchInput').value,
+        cast: document.getElementById('movieFormCastInput').value,
+        description: document.getElementById('movieFormDescInput').value,
+        updatedAt: Date.now()
+      };
+
+      const moviesCol = collection(db, 'artifacts', appId, 'public', 'data', 'movies');
+
+      try {
+        if (id && id !== 'undefined') {
+          await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'movies', id), data);
+          showToast('Movie updated successfully!');
+        } else {
+          await addDoc(moviesCol, data);
+          showToast('Movie added successfully!');
+        }
+        closeMovieFormModal();
+      } catch (err) {
+        showToast('Failed to save movie', 'error');
+      }
+    };
+
+    window.editMovie = function(id) {
+      window.openMovieModal(id);
+    };
+
+    window.deleteMovie = async function(id) {
+      if (!id || id === 'undefined') return;
+      if (!confirm('Are you sure you want to delete this movie?')) return;
+
+      try {
+        await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'movies', id));
+        showToast('Movie deleted');
+      } catch (e) {
+        showToast('Error deleting movie', 'error');
+      }
+    };
+
+    // CATEGORIES ADMIN
+    function renderAdminCategoriesList() {
+      const container = document.getElementById('adminCategoriesList');
+      if (!container) return;
+
+      const cats = window.appState.categories || [];
+      if (cats.length === 0) {
+        container.innerHTML = `<div class="col-span-full text-center py-8 text-slate-500 text-xs">No categories available.</div>`;
+        return;
+      }
+
+      container.innerHTML = cats.map(c => `
+        <div class="glass-panel p-4 rounded-2xl border border-slate-800 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="p-2.5 bg-blue-600/20 text-blue-500 rounded-xl">
+              <i class="fa-solid ${safeString(c.icon, 'fa-film')}"></i>
+            </div>
+            <span class="font-bold text-sm text-slate-100">${safeString(c.name)}</span>
+          </div>
+          <button onclick="deleteCategory('${c.id}')" class="px-2.5 py-1.5 bg-slate-800 hover:bg-red-900/50 text-red-400 rounded-lg text-xs font-semibold">
+            <i class="fa-solid fa-trash"></i>
+          </button>
+        </div>
+      `).join('');
+    }
+
+    window.openCategoryModal = function() {
+      document.getElementById('categoryFormModal').classList.remove('hidden');
+    };
+    window.closeCategoryFormModal = function() {
+      document.getElementById('categoryFormModal').classList.add('hidden');
+    };
+
+    window.handleSaveCategory = async function(e) {
+      e.preventDefault();
+      const name = document.getElementById('categoryFormNameInput').value;
+      const icon = document.getElementById('categoryFormIconInput').value;
+
+      try {
+        const catCol = collection(db, 'artifacts', appId, 'public', 'data', 'categories');
+        await addDoc(catCol, { name, icon });
+        showToast('Category added!');
+        closeCategoryFormModal();
+      } catch (err) {
+        showToast('Error saving category', 'error');
+      }
+    };
+
+    window.deleteCategory = async function(id) {
+      if (!id || id === 'undefined') return;
+      if (!confirm('Delete this category?')) return;
+      try {
+        await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'categories', id));
+        showToast('Category deleted');
+      } catch (e) {
+        showToast('Error deleting category', 'error');
+      }
+    };
+
+    // BANNERS ADMIN
+    function renderAdminBannersList() {
+      const container = document.getElementById('adminBannersList');
+      if (!container) return;
+
+      const banners = window.appState.banners || [];
+      if (banners.length === 0) {
+        container.innerHTML = `<div class="col-span-full text-center py-8 text-slate-500 text-xs">No banners added yet.</div>`;
+        return;
+      }
+
+      container.innerHTML = banners.map(b => `
+        <div class="glass-panel rounded-2xl border border-slate-800 overflow-hidden relative group">
+          <img src="${safeString(b.imageUrl, DEFAULT_BANNER)}" onerror="this.src='${DEFAULT_BANNER}'" class="w-full h-32 object-cover">
+          <div class="p-3 flex items-center justify-between">
+            <div>
+              <h4 class="font-bold text-xs text-slate-100">${safeString(b.title)}</h4>
+              <p class="text-[10px] text-slate-400">${safeString(b.subtitle)}</p>
+            </div>
+            <button onclick="deleteBanner('${b.id}')" class="px-2.5 py-1.5 bg-slate-800 hover:bg-red-900/50 text-red-400 rounded-lg text-xs font-semibold">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    window.openBannerModal = function() {
+      document.getElementById('bannerFormModal').classList.remove('hidden');
+    };
+    window.closeBannerFormModal = function() {
+      document.getElementById('bannerFormModal').classList.add('hidden');
+    };
+
+    window.handleSaveBanner = async function(e) {
+      e.preventDefault();
+      const title = document.getElementById('bannerFormTitleInput').value;
+      const subtitle = document.getElementById('bannerFormSubtitleInput').value;
+      const imageUrl = document.getElementById('bannerFormImageInput').value;
+
+      try {
+        const bannersCol = collection(db, 'artifacts', appId, 'public', 'data', 'banners');
+        await addDoc(bannersCol, { title, subtitle, imageUrl });
+        showToast('Banner added!');
+        closeBannerFormModal();
+      } catch (err) {
+        showToast('Error saving banner', 'error');
+      }
+    };
+
+    window.deleteBanner = async function(id) {
+      if (!id || id === 'undefined') return;
+      if (!confirm('Delete this banner?')) return;
+      try {
+        await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'banners', id));
+        showToast('Banner deleted');
+      } catch (e) {
+        showToast('Error deleting banner', 'error');
+      }
+    };
+
+    // MOCK SEED DATA POPULATOR
+    window.seedDatabaseWithMockData = async function() {
+      showToast('Seeding sample movies and categories...');
+
+      const sampleCategories = [
+        { name: 'Action', icon: 'fa-bolt' },
+        { name: 'Sci-Fi', icon: 'fa-rocket' },
+        { name: 'Drama', icon: 'fa-masks-theater' },
+        { name: 'Animation', icon: 'fa-wand-magic-sparkles' }
+      ];
+
+      const sampleBanners = [
+        {
+          title: 'Cyberpunk Odyssey 2088',
+          subtitle: 'The ultimate futuristic thriller now streaming on JavaGoat',
+          imageUrl: 'https://images.unsplash.com/photo-1578632767115-351597cf2477?w=1200&auto=format&fit=crop&q=80'
+        },
+        {
+          title: 'Deep Blue Horizon',
+          subtitle: 'Explore uncharted oceanic depths in 4K Ultra HD',
+          imageUrl: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1200&auto=format&fit=crop&q=80'
+        }
+      ];
+
+      const sampleMovies = [
+        {
+          title: 'Neon Runner',
+          year: 2024,
+          rating: '8.8',
+          category: 'Sci-Fi',
+          posterUrl: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=500&auto=format&fit=crop&q=80',
+          watchUrl: 'https://www.youtube.com/embed/d9MyW72ELq0',
+          cast: 'Alex Mercer, Elena Rostova',
+          description: 'A mercenary detective navigates a rain-slicked futuristic city to untangle a conspiracy.'
+        },
+        {
+          title: 'Shadow Legend',
+          year: 2023,
+          rating: '9.1',
+          category: 'Action',
+          posterUrl: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=500&auto=format&fit=crop&q=80',
+          watchUrl: 'https://www.youtube.com/embed/d9MyW72ELq0',
+          cast: 'Kenji Sato, Marcus Vance',
+          description: 'An ancient martial arts master comes out of hiding to defend his sanctuary.'
+        },
+        {
+          title: 'Cosmic Journey',
+          year: 2024,
+          rating: '8.5',
+          category: 'Sci-Fi',
+          posterUrl: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=500&auto=format&fit=crop&q=80',
+          watchUrl: 'https://www.youtube.com/embed/d9MyW72ELq0',
+          cast: 'Sarah Connor, Dr. Aris',
+          description: 'A deep space expedition uncovers signals from a forgotten civilization.'
+        },
+        {
+          title: 'The Silent Forest',
+          year: 2022,
+          rating: '7.9',
+          category: 'Drama',
+          posterUrl: 'https://images.unsplash.com/photo-1448375240586-882707db888b?w=500&auto=format&fit=crop&q=80',
+          watchUrl: 'https://www.youtube.com/embed/d9MyW72ELq0',
+          cast: 'Oliver Stone, Claire Red',
+          description: 'An intimate portrait of survival and emotional connection in a secluded mountain wilderness.'
+        }
+      ];
+
+      try {
+        const catCol = collection(db, 'artifacts', appId, 'public', 'data', 'categories');
+        const banCol = collection(db, 'artifacts', appId, 'public', 'data', 'banners');
+        const movCol = collection(db, 'artifacts', appId, 'public', 'data', 'movies');
+
+        for (const c of sampleCategories) await addDoc(catCol, c);
+        for (const b of sampleBanners) await addDoc(banCol, b);
+        for (const m of sampleMovies) await addDoc(movCol, m);
+
+        showToast('Sample data seeded successfully!');
+      } catch (err) {
+        showToast('Error seeding mock data', 'error');
+      }
+    };
+
+    // UTILITIES
+    function showToast(msg, type = 'info') {
+      const toast = document.getElementById('toastNotification');
+      const toastMsg = document.getElementById('toastMsg');
+      const toastIcon = document.getElementById('toastIcon');
+
+      if (!toast || !toastMsg || !toastIcon) return;
+
+      toastMsg.innerText = msg;
+      if (type === 'error') {
+        toastIcon.className = "fa-solid fa-triangle-exclamation text-red-500";
+        toast.className = toast.className.replace('border-blue-500/50', 'border-red-500/50');
+      } else {
+        toastIcon.className = "fa-solid fa-circle-check text-blue-500";
+      }
+
+      toast.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-[-10px]');
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'pointer-events-none', 'translate-y-[-10px]');
+      }, 3000);
+    }
+
+    // App Startup Onload
+    window.addEventListener('DOMContentLoaded', () => {
+      initAuth();
+      renderHeroBanner();
+    });
+  </script>
+</body>
+</html>
